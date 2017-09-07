@@ -1,5 +1,5 @@
 function loadData() {
-    $(".bgimg").remove();
+
     var $body = $('body');
     var $wikiElem = $('#wikipedia-links');
     var $nytHeaderElem = $('#nytimes-header');
@@ -7,6 +7,7 @@ function loadData() {
     var $greeting = $('#greeting');
 
     // clear out old data before new request
+    $(".bgimg").remove();
     $wikiElem.text("");
     $nytElem.text("");
     var addres = $('#street').val() + ', ' + $('#city').val();
@@ -15,17 +16,16 @@ function loadData() {
     var $map = 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location=' + addres;
     $greeting.text('So, you want to live at'+addres+'?');
     $body.prepend('<img class="bgimg" src="' + $map + '">');
-
+    //load NYT articles
+    $nytHeaderElem.text('NYT articles about'+addres+'');
     var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
     url += '?' + $.param({
-        'api-key': "022fd63748304564abbfd307b56f7da6",
+        'api-key': "XXXXXXXXXXXX",
         'q': addres
     });
     $.getJSON( url, function( data ) {
-
         var items = [];
         $.each( data.response.docs, function( key, val ) {
-
             items.push( "<li class='article'><a href='" + val.web_url + "'>" + val.snippet + "</a><p>"+val.snippet+"</p></li>" );
         });
         $( "<ul/>", {
@@ -34,16 +34,6 @@ function loadData() {
             html: items.join( "" )
         }).appendTo( ".nytimes-container" );
     });
-    /*$.ajax({
-        url: url,
-        method: 'GET',
-    }).done(function(result) {
-        result.each()
-        console.log(result);
-    }).fail(function(err) {
-        throw err;
-    });*/
     return false
 };
-
 $('#form-container').submit(loadData);
